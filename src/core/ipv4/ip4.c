@@ -135,6 +135,9 @@ bool ip4_netif_exist(const ip4_addr_t *src, const ip4_addr_t *dest)
       if (ip4_addr_netcmp(src, netif_ip4_addr(netif), netif_ip4_netmask(netif)) || ip4_addr_netcmp(dest, netif_ip4_addr(netif), netif_ip4_netmask(netif))) {
         /* return false when both netif don't match */
         return true;
+      } /* gateway matches on a non broadcast interface? (i.e. peer in a point to point interface) */
+      else if (((netif->flags & NETIF_FLAG_BROADCAST) == 0) && (ip4_addr_cmp(src, netif_ip4_gw(netif)) || ip4_addr_cmp(dest, netif_ip4_gw(netif)))) {
+        return true;
       }
     }
   }
